@@ -11,19 +11,19 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/denkhaus/bitshares/api"
-	"github.com/denkhaus/bitshares/gen/data"
-	"github.com/denkhaus/bitshares/tests"
-	"github.com/denkhaus/bitshares/types"
-	"github.com/denkhaus/bitshares/util"
 	"github.com/denkhaus/gojson"
+	"github.com/iuouiyiuty/bitshares/api"
+	"github.com/iuouiyiuty/bitshares/gen/data"
+	"github.com/iuouiyiuty/bitshares/tests"
+	"github.com/iuouiyiuty/bitshares/types"
+	"github.com/iuouiyiuty/bitshares/util"
 	"github.com/juju/errors"
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/stretchr/objx"
 	"gopkg.in/tomb.v2"
 
 	// importing this initializes sample data fetching
-	_ "github.com/denkhaus/bitshares/gen/samples"
+	_ "github.com/iuouiyiuty/bitshares/gen/samples"
 )
 
 type Unmarshalable interface {

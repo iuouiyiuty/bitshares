@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/denkhaus/bitshares/gen/data"
-	"github.com/denkhaus/bitshares/types"
+	"github.com/iuouiyiuty/bitshares/gen/data"
+	"github.com/iuouiyiuty/bitshares/types"
 	"github.com/juju/errors"
 	"github.com/mitchellh/reflectwalk"
 	"github.com/stretchr/objx"

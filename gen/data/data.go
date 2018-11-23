@@ -1,7 +1,7 @@
 package data
 
 import (
-	"github.com/denkhaus/bitshares/types"
+	"github.com/iuouiyiuty/bitshares/types"
 	"github.com/juju/errors"
 )
 

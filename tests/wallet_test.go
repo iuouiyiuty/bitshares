@@ -3,9 +3,9 @@ package tests
 import (
 	"testing"
 
-	"github.com/denkhaus/bitshares/api"
-	"github.com/denkhaus/bitshares/crypto"
-	"github.com/denkhaus/bitshares/operations"
+	"github.com/iuouiyiuty/bitshares/api"
+	"github.com/iuouiyiuty/bitshares/crypto"
+	"github.com/iuouiyiuty/bitshares/operations"
 	"github.com/iuouiyiuty/bitshares/types"
 	"github.com/stretchr/testify/suite"
 )
