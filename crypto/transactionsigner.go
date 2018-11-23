@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/btcsuite/btcd/btcec"
-	"github.com/denkhaus/bitshares/config"
-	"github.com/denkhaus/bitshares/types"
+	"github.com/iuouiyiuty/bitshares/config"
+	"github.com/iuouiyiuty/bitshares/types"
 
 	"github.com/juju/errors"
 )

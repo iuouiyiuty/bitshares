@@ -8,10 +8,14 @@ import (
 	"encoding/hex"
 	"time"
 
-	"github.com/denkhaus/bitshares/config"
-	"github.com/denkhaus/bitshares/util"
+	"github.com/iuouiyiuty/bitshares/config"
+	"github.com/iuouiyiuty/bitshares/util"
 
+	"encoding/json"
+	"fmt"
+	"github.com/denkhaus/logging"
 	"github.com/juju/errors"
+	"github.com/pquerna/ffjson/ffjson"
 )
 
 const (
@@ -147,4 +151,49 @@ func NewSignedTransaction() *SignedTransaction {
 	}
 
 	return &tx
+}
+
+type SignedTransactionWithTransactionId struct {
+	SignedTransaction SignedTransaction
+	TransactionId     string
+}
+
+func (p SignedTransactionWithTransactionId) Marshal(enc *util.TypeEncoder) error {
+	// type is marshaled by operation
+	if err := enc.Encode(p); err != nil {
+		return errors.Annotate(err, "encode SignedTransactionWithTransactionId")
+	}
+
+	return nil
+}
+
+func (p SignedTransactionWithTransactionId) MarshalJSON() ([]byte, error) {
+	return ffjson.Marshal([]interface{}{
+		p.TransactionId,
+		p.SignedTransaction,
+	})
+}
+
+func (p *SignedTransactionWithTransactionId) UnmarshalJSON(data []byte) error {
+	raw := make([]json.RawMessage, 2)
+	if err := ffjson.Unmarshal(data, &raw); err != nil {
+		return errors.Annotate(err, "unmarshal raw object")
+	}
+
+	if len(raw) != 2 {
+		return ErrInvalidInputLength
+	}
+
+	if err := ffjson.Unmarshal(raw[0], &p.TransactionId); err != nil {
+		return errors.Annotate(err, "unmarshal TransactionId")
+	}
+
+	descr := fmt.Sprintf("TransactionId %s", p.TransactionId)
+
+	if err := ffjson.Unmarshal(raw[1], &p.SignedTransaction); err != nil {
+		logging.DDumpUnmarshaled(descr, raw[1])
+		return errors.Annotatef(err, "unmarshal SignedTransaction %s", p.SignedTransaction)
+	}
+
+	return nil
 }

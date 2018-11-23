@@ -80,6 +80,9 @@ type BitsharesAPI interface {
 	WalletSellAsset(account types.GrapheneObject, amountToSell string, symbolToSell types.GrapheneObject, minToReceive string, symbolToReceive types.GrapheneObject, timeout uint32, fillOrKill bool, broadcast bool) (*types.SignedTransaction, error)
 	WalletSignTransaction(tx *types.SignedTransaction, broadcast bool) (*types.SignedTransaction, error)
 	WalletSerializeTransaction(tx *types.SignedTransaction) (string, error)
+	WalletReadMemo(memo *types.Memo) (string, error)
+	WalletTransfer2(from, to types.GrapheneObject, amount string, asset types.GrapheneObject, memo string) (*types.SignedTransactionWithTransactionId, error)
+	WalletGetBlock(number uint64) (*types.Block, error)
 }
 
 type bitsharesAPI struct {

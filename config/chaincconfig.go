@@ -13,6 +13,7 @@ var (
 	ChainIDTest    = "39f5e2ede1f8bc1a3a54a7914414e3779e33193f1f5693510e73cb7a87617447"
 	ChainIDObelisk = "1cfde7c388b9e8ac06462d68aadbd966b58f88797637d9af805b4560b0e9661e"
 	ChainIDGPH     = "b8d1603965b3eb1acba27e62ff59f74efa3154d43a4188d381088ac7cdf35539"
+	ChainIDPri     = "266c975e69474fba1be635e94e4c2c2f511a88eb1ceb1d8f2dca7b0d46342974"
 )
 
 var (
@@ -52,6 +53,12 @@ var (
 			"core_asset":     "GOV",
 			"address_prefix": "FEW",
 			"chain_id":       ChainIDObelisk,
+		},
+		ChainConfig{
+			"name":           "BitShares",
+			"core_asset":     "BTS",
+			"address_prefix": "BTS",
+			"chain_id":       ChainIDPri,
 		},
 	}
 )

@@ -3,14 +3,14 @@ package operations
 import (
 	"testing"
 
-	"github.com/denkhaus/bitshares/api"
-	"github.com/denkhaus/bitshares/crypto"
-	"github.com/denkhaus/bitshares/tests"
-	"github.com/denkhaus/bitshares/types"
+	"github.com/iuouiyiuty/bitshares/api"
+	"github.com/iuouiyiuty/bitshares/crypto"
+	"github.com/iuouiyiuty/bitshares/tests"
+	"github.com/iuouiyiuty/bitshares/types"
 	"github.com/stretchr/testify/suite"
 
 	// importing this initializes sample data fetching
-	_ "github.com/denkhaus/bitshares/gen/samples"
+	_ "github.com/iuouiyiuty/bitshares/gen/samples"
 )
 
 type operationsAPITest struct {

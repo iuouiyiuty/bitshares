@@ -3,7 +3,7 @@ package types
 import (
 	"time"
 
-	"github.com/denkhaus/bitshares/util"
+	"github.com/iuouiyiuty/bitshares/util"
 	"github.com/juju/errors"
 )
 

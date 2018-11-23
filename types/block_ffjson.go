@@ -144,6 +144,8 @@ const (
 	ffjtBlockTransactions
 
 	ffjtBlockExtensions
+
+	ffjtBlockTransactionIds
 )
 
 var ffjKeyBlockWitness = []byte("witness")
@@ -159,6 +161,8 @@ var ffjKeyBlockTimeStamp = []byte("timestamp")
 var ffjKeyBlockTransactions = []byte("transactions")
 
 var ffjKeyBlockExtensions = []byte("extensions")
+
+var ffjKeyBlockTransactionIds = []byte("transaction_ids")
 
 // UnmarshalJSON umarshall json - template of ffjson
 func (j *Block) UnmarshalJSON(input []byte) error {
@@ -253,6 +257,10 @@ mainparse:
 						currentKey = ffjtBlockTransactions
 						state = fflib.FFParse_want_colon
 						goto mainparse
+					} else if bytes.Equal(ffjKeyBlockTransactionIds, kn) {
+						currentKey = ffjtBlockTransactionIds
+						state = fflib.FFParse_want_colon
+						goto mainparse
 					}
 
 				case 'w':
@@ -278,6 +286,12 @@ mainparse:
 
 				if fflib.EqualFoldRight(ffjKeyBlockTransactions, kn) {
 					currentKey = ffjtBlockTransactions
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.EqualFoldRight(ffjKeyBlockTransactionIds, kn) {
+					currentKey = ffjtBlockTransactionIds
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -349,6 +363,9 @@ mainparse:
 
 				case ffjtBlockExtensions:
 					goto handle_Extensions
+
+				case ffjtBlockTransactionIds:
+					goto handle_TransactionIds
 
 				case ffjtBlocknosuchkey:
 					err = fs.SkipField(tok)
@@ -620,6 +637,30 @@ handle_Extensions:
 				wantVal = false
 			}
 		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_TransactionIds:
+
+	/* handler: j.TimeStamp type=types.Time kind=struct quoted=false*/
+
+	{
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			tbuf, err := fs.CaptureField(tok)
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+			err = json.Unmarshal(tbuf, &j.TransactionIds)
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value

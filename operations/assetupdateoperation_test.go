@@ -1,8 +1,8 @@
 package operations
 
 import (
-	"github.com/denkhaus/bitshares/gen/data"
-	"github.com/denkhaus/bitshares/types"
+	"github.com/iuouiyiuty/bitshares/gen/data"
+	"github.com/iuouiyiuty/bitshares/types"
 )
 
 func (suite *operationsAPITest) Test_AssetUpdateOperation() {

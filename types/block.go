@@ -10,4 +10,5 @@ type Block struct {
 	TimeStamp             Time               `json:"timestamp"`
 	Transactions          SignedTransactions `json:"transactions"`
 	Extensions            Extensions         `json:"extensions"`
+	TransactionIds        []string           `json:"transaction_ids"`
 }

@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/denkhaus/bitshares/api"
-	"github.com/denkhaus/bitshares/types"
-	"github.com/denkhaus/bitshares/util"
+	"github.com/iuouiyiuty/bitshares/api"
+	"github.com/iuouiyiuty/bitshares/types"
+	"github.com/iuouiyiuty/bitshares/util"
 	"github.com/juju/errors"
 	"github.com/stretchr/testify/assert"
 )

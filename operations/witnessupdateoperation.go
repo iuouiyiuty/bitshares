@@ -3,8 +3,8 @@ package operations
 //go:generate ffjson $GOFILE
 
 import (
-	"github.com/denkhaus/bitshares/types"
-	"github.com/denkhaus/bitshares/util"
+	"github.com/iuouiyiuty/bitshares/types"
+	"github.com/iuouiyiuty/bitshares/util"
 	"github.com/juju/errors"
 )
 

@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/cheggaaa/pb"
-	"github.com/denkhaus/bitshares/api"
-	"github.com/denkhaus/bitshares/util"
+	"github.com/iuouiyiuty/bitshares/api"
+	"github.com/iuouiyiuty/bitshares/util"
 	"github.com/juju/errors"
 	"github.com/stretchr/testify/suite"
 )

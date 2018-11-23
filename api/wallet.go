@@ -266,3 +266,54 @@ func (p *bitsharesAPI) WalletSignTransaction(tx *types.SignedTransaction, broadc
 	return &ret, nil
 
 }
+
+func (p *bitsharesAPI) WalletReadMemo(memo *types.Memo) (string, error) {
+	if p.rpcClient == nil {
+		return "", types.ErrRPCClientNotInitialized
+	}
+	resp, err := p.rpcClient.CallAPI("read_memo", memo)
+	if err != nil {
+		return "", err
+	}
+	msg := ""
+	ok := false
+	if msg, ok = resp.(string); ok {
+		return msg, nil
+	}
+	return msg, nil
+}
+
+func (p *bitsharesAPI) WalletTransfer2(from, to types.GrapheneObject, amount string, asset types.GrapheneObject, memo string) (*types.SignedTransactionWithTransactionId, error) {
+	if p.rpcClient == nil {
+		return nil, types.ErrRPCClientNotInitialized
+	}
+	resp, err := p.rpcClient.CallAPI("transfer2", from, to, amount, asset, memo)
+	if err != nil {
+		return nil, err
+	}
+	ret := types.SignedTransactionWithTransactionId{}
+	if err := ffjson.Unmarshal(util.ToBytes(resp), &ret); err != nil {
+		return nil, errors.Annotate(err, "unmarshal Transaction")
+	}
+	return &ret, nil
+}
+
+func (p *bitsharesAPI) WalletGetBlock(number uint64) (*types.Block, error) {
+	if p.rpcClient == nil {
+		return nil, types.ErrRPCClientNotInitialized
+	}
+
+	resp, err := p.rpcClient.CallAPI("get_block", number)
+	if err != nil {
+		return nil, err
+	}
+
+	logging.DDumpJSON("get_block <", resp)
+
+	ret := types.Block{}
+	if err := ffjson.Unmarshal(util.ToBytes(resp), &ret); err != nil {
+		return nil, errors.Annotate(err, "unmarshal Block")
+	}
+
+	return &ret, nil
+}

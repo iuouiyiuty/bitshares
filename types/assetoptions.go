@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/denkhaus/bitshares/util"
+	"github.com/iuouiyiuty/bitshares/util"
 	"github.com/juju/errors"
 )
 

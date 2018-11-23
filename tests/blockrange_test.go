@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	// register operations
 
-	_ "github.com/denkhaus/bitshares/operations"
 	"github.com/denkhaus/logging"
+	_ "github.com/iuouiyiuty/bitshares/operations"
 )
 
 func TestBlockRange(t *testing.T) {
