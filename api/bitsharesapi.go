@@ -83,6 +83,7 @@ type BitsharesAPI interface {
 	WalletReadMemo(memo *types.Memo) (string, error)
 	WalletTransfer2(from, to types.GrapheneObject, amount string, asset types.GrapheneObject, memo string) (*types.SignedTransactionWithTransactionId, error)
 	WalletGetBlock(number uint64) (*types.Block, error)
+	WalletGetRelativeAccountHistory(account types.GrapheneObject, stop int64, limit int, start int64) (types.OperationRelativeHistories, error)
 }
 
 type bitsharesAPI struct {

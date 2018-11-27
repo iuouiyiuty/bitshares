@@ -4,6 +4,8 @@ package types
 
 type OperationHistories []OperationHistory
 
+type OperationRelativeHistories []OperationRelativeHistory
+
 type OperationHistory struct {
 	ID         GrapheneID        `json:"id"`
 	BlockNum   UInt32            `json:"block_num"`
@@ -12,4 +14,10 @@ type OperationHistory struct {
 	VirtualOp  UInt16            `json:"virtual_op"`
 	Operation  OperationEnvelope `json:"op"`
 	Result     OperationResult   `json:"result"`
+}
+
+type OperationRelativeHistory struct {
+	Memo        string           `json:"memo"`
+	Description string           `json:"description"`
+	Op          OperationHistory `json:"op"`
 }

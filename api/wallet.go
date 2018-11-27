@@ -317,3 +317,32 @@ func (p *bitsharesAPI) WalletGetBlock(number uint64) (*types.Block, error) {
 
 	return &ret, nil
 }
+
+// GetAccountHistory returns OperationHistory object(s).
+// account: The account whose history should be queried
+// stop: ID of the earliest operation to retrieve
+// limit: Maximum number of operations to retrieve (must not exceed 100)
+// start: ID of the most recent operation to retrieve
+func (p *bitsharesAPI) WalletGetRelativeAccountHistory(account types.GrapheneObject, stop int64, limit int, start int64) (types.OperationRelativeHistories, error) {
+	if p.rpcClient == nil {
+		return nil, types.ErrRPCClientNotInitialized
+	}
+
+	if limit > GetAccountHistoryLimit {
+		limit = GetAccountHistoryLimit
+	}
+
+	resp, err := p.rpcClient.CallAPI("get_relative_account_history", account.ID(), stop, limit, start)
+	if err != nil {
+		return nil, err
+	}
+
+	logging.DDumpJSON("get_relative_account_history <", resp)
+
+	ret := types.OperationRelativeHistories{}
+	if err := ffjson.Unmarshal(util.ToBytes(resp), &ret); err != nil {
+		return nil, errors.Annotate(err, "unmarshal Histories")
+	}
+
+	return ret, nil
+}
