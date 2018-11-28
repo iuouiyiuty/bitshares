@@ -11,6 +11,9 @@ var (
 	ChainIDTest    = "39f5e2ede1f8bc1a3a54a7914414e3779e33193f1f5693510e73cb7a87617447"
 	ChainIDObelisk = "1cfde7c388b9e8ac06462d68aadbd966b58f88797637d9af805b4560b0e9661e"
 	ChainIDGPH     = "b8d1603965b3eb1acba27e62ff59f74efa3154d43a4188d381088ac7cdf35539"
+	ChainIDSPM     = ""
+	ChainIDSPMTest = "3b3b6ec2827fe6b27805203264e035e4a94f6ba95da7a14f7746b6f75612e676"
+	ChainIDAIS     = "32a81eefffe46f2b486d9c7c6b3990f8a1c1d97713eed46bfbb3925d2a4e986e"
 )
 
 var (
@@ -51,6 +54,23 @@ var (
 			"address_prefix": "FEW",
 			"chain_id":       ChainIDObelisk,
 		},
+		ChainConfig{
+			"name":           "SPM",
+			"core_asset":     "SPM",
+			"address_prefix": "SPM",
+			"chain_id":       ChainIDSPM,
+		},
+		ChainConfig{
+			"name":           "SPM",
+			"core_asset":     "SPM",
+			"address_prefix": "SPM",
+			"chain_id":       ChainIDSPMTest,
+		}, ChainConfig{
+			"name":           "AIS",
+			"core_asset":     "AIS",
+			"address_prefix": "AIS",
+			"chain_id":       ChainIDAIS,
+		},
 	}
 )
 
@@ -75,19 +95,20 @@ func CurrentConfig() *ChainConfig {
 }
 
 func SetCurrentConfig(chainID string) error {
+	for _, cnf := range knownNetworks {
+		if cnf["chain_id"] == chainID {
+			currentConfig = &cnf
+			return nil
+		}
+	}
+	//
 	currentConfig = &ChainConfig{
-		"name":           "BitShares",
-		"core_asset":     "BTS",
-		"address_prefix": "BTS",
+		"name":           "SPM",
+		"core_asset":     "SPM",
+		"address_prefix": "SPM",
 		"chain_id":       chainID,
 	}
 	return nil
-	//for _, cnf := range knownNetworks {
-	//	if cnf["chain_id"] == chainID {
-	//		currentConfig = &cnf
-	//		return nil
-	//	}
-	//}
-	//
+
 	//return errors.Errorf("ChainConfig for chainID %q not found", chainID)
 }
