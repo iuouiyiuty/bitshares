@@ -812,11 +812,11 @@ handle_WitnessBudget:
 
 	/* handler: j.WitnessBudget type=int64 kind=int64 quoted=false*/
 
-	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int64", tok))
-		}
-	}
+	//{
+	//	if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
+	//		return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int64", tok))
+	//	}
+	//}
 
 	{
 
