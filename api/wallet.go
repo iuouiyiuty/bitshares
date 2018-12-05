@@ -275,15 +275,33 @@ func (p *bitsharesAPI) WalletReadMemo(memo *types.Memo) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	msg := ""
-	ok := false
-	if msg, ok = resp.(string); ok {
-		return msg, nil
+	if resp != nil {
+		ok := false
+		if msg, ok = resp.(string); ok {
+			return msg, nil
+		}
 	}
 	return msg, nil
 }
 
 func (p *bitsharesAPI) WalletTransfer2(from, to types.GrapheneObject, amount string, asset types.GrapheneObject, memo string) (*types.SignedTransactionWithTransactionId, error) {
+	if p.rpcClient == nil {
+		return nil, types.ErrRPCClientNotInitialized
+	}
+	resp, err := p.rpcClient.CallAPI("transfer2", from, to, amount, asset, memo)
+	if err != nil {
+		return nil, err
+	}
+	ret := types.SignedTransactionWithTransactionId{}
+	if err := ffjson.Unmarshal(util.ToBytes(resp), &ret); err != nil {
+		return nil, errors.Annotate(err, "unmarshal Transaction")
+	}
+	return &ret, nil
+}
+
+func (p *bitsharesAPI) WalletTransfer2Cmd(from, to string, amount string, asset types.GrapheneObject, memo string) (*types.SignedTransactionWithTransactionId, error) {
 	if p.rpcClient == nil {
 		return nil, types.ErrRPCClientNotInitialized
 	}
