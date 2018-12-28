@@ -86,6 +86,7 @@ type BitsharesAPI interface {
 	WalletGetBlock(number uint64) (*types.Block, error)
 	WalletGetRelativeAccountHistory(account types.GrapheneObject, stop int64, limit int, start int64) (types.OperationRelativeHistories, error)
 	WalletGetDynamicGlobalProperties() (*types.DynamicGlobalProperties, error)
+	WalletConnect() error
 }
 
 type bitsharesAPI struct {
@@ -893,6 +894,24 @@ func New(wsEndpointURL, rpcEndpointURL string) BitsharesAPI {
 	}
 
 	api.wsClient = NewSimpleClientProvider(wsEndpointURL, api)
+	return api
+}
+
+func NewWithoutWs(rpcEndpointURL string) BitsharesAPI {
+	var rpcClient RPCClient
+
+	if rpcEndpointURL != "" {
+		rpcClient = NewRPCClient(rpcEndpointURL)
+	}
+
+	api := &bitsharesAPI{
+		rpcClient:      rpcClient,
+		databaseAPIID:  InvalidApiID,
+		historyAPIID:   InvalidApiID,
+		broadcastAPIID: InvalidApiID,
+	}
+
+	api.wsClient = nil
 	return api
 }
 
