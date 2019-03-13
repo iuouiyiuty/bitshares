@@ -112,3 +112,8 @@ func SetCurrentConfig(chainID string) error {
 
 	//return errors.Errorf("ChainConfig for chainID %q not found", chainID)
 }
+
+func CustomCurrentConfig(cfg *ChainConfig) error {
+	currentConfig = cfg
+	return nil
+}
