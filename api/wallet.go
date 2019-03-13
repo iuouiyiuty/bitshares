@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/denkhaus/logging"
-	"github.com/iuouiyiuty/bitshares/config"
 	"github.com/iuouiyiuty/bitshares/types"
 	"github.com/iuouiyiuty/bitshares/util"
 	"github.com/juju/errors"
@@ -391,10 +390,6 @@ func (p *bitsharesAPI) WalletConnect() error {
 		if err := p.rpcClient.Connect(); err != nil {
 			return errors.Annotate(err, "Connect [rpc]")
 		}
-	}
-
-	if err := config.SetCurrentConfig(""); err != nil {
-		return errors.Annotate(err, "SetCurrentConfig")
 	}
 
 	return nil
