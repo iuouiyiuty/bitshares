@@ -94,6 +94,12 @@ func CurrentConfig() *ChainConfig {
 	return currentConfig
 }
 
+var DefaultChain = ChainConfig{
+	"name":           "BAR",
+	"core_asset":     "BAR",
+	"address_prefix": "BAR",
+}
+
 func SetCurrentConfig(chainID string) error {
 	for _, cnf := range knownNetworks {
 		if cnf["chain_id"] == chainID {
@@ -101,13 +107,10 @@ func SetCurrentConfig(chainID string) error {
 			return nil
 		}
 	}
-	//
-	currentConfig = &ChainConfig{
-		"name":           "SPM",
-		"core_asset":     "SPM",
-		"address_prefix": "SPM",
-		"chain_id":       chainID,
-	}
+	
+	DefaultChain["chain_id"] = chainID
+	
+	currentConfig = &DefaultChain
 	return nil
 
 	//return errors.Errorf("ChainConfig for chainID %q not found", chainID)
