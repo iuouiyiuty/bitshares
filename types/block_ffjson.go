@@ -96,10 +96,14 @@ func (j *Block) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			if i != 0 {
 				buf.WriteString(`,`)
 			}
-			/* Struct fall back. type=types.SignedTransaction kind=struct */
-			err = buf.Encode(&v)
-			if err != nil {
-				return err
+
+			{
+
+				err = v.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
 			}
 		}
 		buf.WriteString(`]`)
@@ -123,6 +127,21 @@ func (j *Block) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	} else {
 		buf.WriteString(`null`)
 	}
+	buf.WriteString(`,"transaction_ids":`)
+	if j.TransactionIds != nil {
+		buf.WriteString(`[`)
+		for i, v := range j.TransactionIds {
+			if i != 0 {
+				buf.WriteString(`,`)
+			}
+			fflib.WriteJsonString(buf, string(v))
+		}
+		buf.WriteString(`]`)
+	} else {
+		buf.WriteString(`null`)
+	}
+	buf.WriteString(`,"block_id":`)
+	fflib.WriteJsonString(buf, string(j.BlockHash))
 	buf.WriteByte('}')
 	return nil
 }
@@ -146,6 +165,8 @@ const (
 	ffjtBlockExtensions
 
 	ffjtBlockTransactionIds
+
+	ffjtBlockBlockHash
 )
 
 var ffjKeyBlockWitness = []byte("witness")
@@ -163,6 +184,8 @@ var ffjKeyBlockTransactions = []byte("transactions")
 var ffjKeyBlockExtensions = []byte("extensions")
 
 var ffjKeyBlockTransactionIds = []byte("transaction_ids")
+
+var ffjKeyBlockBlockHash = []byte("block_id")
 
 // UnmarshalJSON umarshall json - template of ffjson
 func (j *Block) UnmarshalJSON(input []byte) error {
@@ -225,6 +248,14 @@ mainparse:
 			} else {
 				switch kn[0] {
 
+				case 'b':
+
+					if bytes.Equal(ffjKeyBlockBlockHash, kn) {
+						currentKey = ffjtBlockBlockHash
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
 				case 'e':
 
 					if bytes.Equal(ffjKeyBlockExtensions, kn) {
@@ -257,6 +288,7 @@ mainparse:
 						currentKey = ffjtBlockTransactions
 						state = fflib.FFParse_want_colon
 						goto mainparse
+
 					} else if bytes.Equal(ffjKeyBlockTransactionIds, kn) {
 						currentKey = ffjtBlockTransactionIds
 						state = fflib.FFParse_want_colon
@@ -278,6 +310,18 @@ mainparse:
 
 				}
 
+				if fflib.EqualFoldRight(ffjKeyBlockBlockHash, kn) {
+					currentKey = ffjtBlockBlockHash
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.EqualFoldRight(ffjKeyBlockTransactionIds, kn) {
+					currentKey = ffjtBlockTransactionIds
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
 				if fflib.EqualFoldRight(ffjKeyBlockExtensions, kn) {
 					currentKey = ffjtBlockExtensions
 					state = fflib.FFParse_want_colon
@@ -286,12 +330,6 @@ mainparse:
 
 				if fflib.EqualFoldRight(ffjKeyBlockTransactions, kn) {
 					currentKey = ffjtBlockTransactions
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.EqualFoldRight(ffjKeyBlockTransactionIds, kn) {
-					currentKey = ffjtBlockTransactionIds
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -366,6 +404,9 @@ mainparse:
 
 				case ffjtBlockTransactionIds:
 					goto handle_TransactionIds
+
+				case ffjtBlockBlockHash:
+					goto handle_BlockHash
 
 				case ffjtBlocknosuchkey:
 					err = fs.SkipField(tok)
@@ -552,16 +593,16 @@ handle_Transactions:
 				/* handler: tmpJTransactions type=types.SignedTransaction kind=struct quoted=false*/
 
 				{
-					/* Falling back. type=types.SignedTransaction kind=struct */
-					tbuf, err := fs.CaptureField(tok)
-					if err != nil {
-						return fs.WrapErr(err)
-					}
+					if tok == fflib.FFTok_null {
 
-					err = json.Unmarshal(tbuf, &tmpJTransactions)
-					if err != nil {
-						return fs.WrapErr(err)
+					} else {
+
+						err = tmpJTransactions.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+						if err != nil {
+							return err
+						}
 					}
+					state = fflib.FFParse_after_value
 				}
 
 				j.Transactions = append(j.Transactions, tmpJTransactions)
@@ -644,23 +685,99 @@ handle_Extensions:
 
 handle_TransactionIds:
 
-	/* handler: j.TimeStamp type=types.Time kind=struct quoted=false*/
+	/* handler: j.TransactionIds type=[]string kind=slice quoted=false*/
 
 	{
+
+		{
+			if tok != fflib.FFTok_left_brace && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for ", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+			j.TransactionIds = nil
+		} else {
+
+			j.TransactionIds = []string{}
+
+			wantVal := true
+
+			for {
+
+				var tmpJTransactionIds string
+
+				tok = fs.Scan()
+				if tok == fflib.FFTok_error {
+					goto tokerror
+				}
+				if tok == fflib.FFTok_right_brace {
+					break
+				}
+
+				if tok == fflib.FFTok_comma {
+					if wantVal == true {
+						// TODO(pquerna): this isn't an ideal error message, this handles
+						// things like [,,,] as an array value.
+						return fs.WrapErr(fmt.Errorf("wanted value token, but got token: %v", tok))
+					}
+					continue
+				} else {
+					wantVal = true
+				}
+
+				/* handler: tmpJTransactionIds type=string kind=string quoted=false*/
+
+				{
+
+					{
+						if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+							return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+						}
+					}
+
+					if tok == fflib.FFTok_null {
+
+					} else {
+
+						outBuf := fs.Output.Bytes()
+
+						tmpJTransactionIds = string(string(outBuf))
+
+					}
+				}
+
+				j.TransactionIds = append(j.TransactionIds, tmpJTransactionIds)
+
+				wantVal = false
+			}
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_BlockHash:
+
+	/* handler: j.BlockHash type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
 		if tok == fflib.FFTok_null {
 
 		} else {
 
-			tbuf, err := fs.CaptureField(tok)
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-			err = json.Unmarshal(tbuf, &j.TransactionIds)
-			if err != nil {
-				return fs.WrapErr(err)
-			}
+			outBuf := fs.Output.Bytes()
+
+			j.BlockHash = string(string(outBuf))
+
 		}
-		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value

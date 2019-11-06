@@ -11,4 +11,5 @@ type Block struct {
 	Transactions          SignedTransactions `json:"transactions"`
 	Extensions            Extensions         `json:"extensions"`
 	TransactionIds        []string           `json:"transaction_ids"`
+	BlockHash             string             `json:"block_id"`
 }
